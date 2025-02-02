@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ES">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="/Images/logo.png" alt="Logo Universidad" />
+            <h1>Club</h1>
+        </div>
+        <nav>
+            <ul class="menu">
+
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Explorar</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="#" id="menu-toggle">≡</a></li>
+                
+            </ul>
+        </nav>
+    </header>
+
+    <main class="forum-container">
+        <aside class="sidebar">
+            <h2>Categorías</h2>
+            <ul>
+                <li><a href="#">General</a></li>
+                <li><a href="#">Tareas y Estudios</a></li>
+                <li><a href="#">Proyectos</a></li>
+                <li><a href="#">Eventos</a></li>
+            </ul>
+        </aside>
+
+        <section class="posts-section">
+
+            <!-- Publicaciones -->
+
+        </section>
+        
+        <section class="new-post-section">
+            <h2>Crear nueva publicación</h2>
+            <form class="new-post-form">
+                <textarea id="postContent" placeholder="Escribe tu publicación..." maxlength="200" required></textarea>
+                <div class="character-counter">
+                    <span id="charCount">0/200</span>
+                </div>
+                <button type="submit">Publicar</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+
+        // == menú desplegable al hacer clic en "≡" == 
+        document.getElementById("menu-toggle").onclick = () => {
+        const menu = document.getElementById("dropdown-menu");
+        menu.classList.toggle("hidden");
+        };
+
+        //== NUEVA PUBLICACIÓN == 
+
+        function agregarPublicacion() {
+            const contenido = document.querySelector('.new-post-form textarea').value;
+            console.log("Contenido de la publicación:", contenido); //== verificación de contenido == 
+
+            if (!contenido) return; //== si el campo está vacio no se hace nada == 
+
+            //== Limitar a 200 crt == 
+
+            const contenidoRecortado = contenido.length > 200 ? contenido.substring(0, 200) : contenido;
+            console.log("Contenido recortado (si es necesario):", contenidoRecortado);
+
+            //== Recuperar datos del usuario desde LS == 
+
+            const usuario = JSON.parse(localStorage.getItem("usuario"));
+            if (!usuario || !usuario.nombreUsuario || !usuario.fotoPerfil) {
+                alert("No se ha encontrado el usuario. Por favor, inicie sesión.");
+                return;
+            }
+
+            //== Nuevo post == 
+
+            const nuevaPublicacion = {
+                nombreUsuario: usuario.nombreUsuario,
+                fotoPerfil: usuario.fotoPerfil,
+                contenido: contenidoRecortado,
+                tiempoPublicacion: new Date().toLocaleString()
+            };
+
+            //== RECUPERAR PUBLICACIONES DE LS
+
+            let publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
+            publicaciones.unshift(nuevaPublicacion); //== nuevo post al inicio == 
+
+            //== array de publicaciones de nuevo en ls == 
+
+            localStorage.setItem("publicaciones", JSON.stringify(publicaciones));
+
+            //== limpia cuadro de nuevo post == 
+
+            document.querySelector('.new-post-form textarea').value = '';
+
+            //== renderizar == 
+
+            renderizarPublicaciones();
+        }
+
+        //== renderizar las publicaciones == 
+
+        function renderizarPublicaciones() {
+            const postsSection = document.querySelector('.posts-section');
+            postsSection.innerHTML = ''; //limpia publicaciones que ya existen
+
+            //== cargar publicaciones desde ls == 
+
+            const publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
+
+            if (publicaciones.length === 0) {
+                console.log("No hay publicaciones para mostrar.");
+            }
+
+            publicaciones.forEach((publicacion, index) => {
+                const nuevaPublicacion = document.createElement('article');
+                nuevaPublicacion.classList.add('post-card');
+
+                nuevaPublicacion.innerHTML = `
+                    <div class="post-header">
+                        <img src="${publicacion.fotoPerfil}" alt="Avatar Usuario" class="avatar" />
+                        <div class="post-info">
+                            <h3>${publicacion.nombreUsuario}</h3>
+                            <p>Publicado hace ${publicacion.tiempoPublicacion}</p>
+                        </div>
+                        <button class="delete-btn" onclick="eliminarPublicacion(${index})">🗑️</button>
+                    </div>
+                    <div class="post-content">
+                        <p>${publicacion.contenido}</p>
+                    </div>
+                    <div class="post-footer">
+                        <button class="like-btn">❤️ Me gusta</button>
+                        <button class="comment-btn">💬 Comentar</button>
+                    </div>
+                `;
+
+                // == nuevo post arriba == 
+
+                postsSection.prepend(nuevaPublicacion);
+            });
+        }
+
+        // == BOTON ELIMINAR POST  == 
+
+        function eliminarPublicacion(index) {
+
+            // == confirmar eliminación == 
+
+            const confirmar = confirm("¿Estás seguro de que deseas eliminar esta publicación?");
+            if (confirmar) {
+
+                // == recuperar post de ls == 
+
+                let publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
+
+                // == eliminar post == 
+
+                publicaciones.splice(index, 1);
+
+
+                // == Guardar el array actualizado en localStorage == 
+
+                localStorage.setItem("publicaciones", JSON.stringify(publicaciones));
+
+                // == Renderizar las publicaciones después de eliminar la publicación == 
+
+                renderizarPublicaciones();
+            }
+        }
+
+        // == enviar post == 
+
+        document.querySelector('.new-post-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar que se recargue la página
+            agregarPublicacion();
+        });
+
+        // == renderizar == 
+
+        window.addEventListener('DOMContentLoaded', renderizarPublicaciones);
+    </script>
+    <script>
+
+        // == textarea y el contador == 
+
+        const postContent = document.getElementById('postContent');
+        const charCount = document.getElementById('charCount');
+    
+        // == actualizar el contador de caracteres == 
+        
+        postContent.addEventListener('input', () => {
+            const currentLength = postContent.value.length;
+            charCount.textContent = `${currentLength}/200`;
+    
+            // == cambio de color cuando se acerque a los 200 caracteres == 
+
+            if (currentLength >= 180) {
+                charCount.style.color = 'red';
+            } else {
+                charCount.style.color = '#f4f4f4'; //color principal
+            }
+        });
+    </script>
+</body>
+
+</html>
