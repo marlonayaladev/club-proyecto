@@ -8,22 +8,23 @@
 
 **Características:** 
 
- ╭🚨┊ Registro de usuarios mediante correo universitario.
+╭💻┊ Registro de usuarios mediante correo universitario.
 
- ┊🚨┊ Interacción entre estudiantes a través de       publicaciones.
+┊💬┊ Interacción entre estudiantes a través de publicaciones.
 
- ╰🚨┊ Creación de perfiles personales.
+╰🙋‍♂️┊ Creación de perfile personales.
+
 
 
 **Tecnologías Usadas:**
 
- ╭🚨Frontend ┊ HTML, CSS, JavaScript
+ ╭🌐 Frontend ┊ HTML, CSS, JavaScript
 
- ┊🚨Backend ┊ Node.js, Express
+ ┊⚙️ Backend ┊ Node.js, Express, PHP
 
- ┊🚨Base de datos ┊ MySQL
+ ┊🗄️ Base de datos ┊ MySQL
 
- ╰🚨Herramientas de despliegue ┊ Heroku / Netlify
+ ╰🚨Herramientas de despliegue ┊ (En proceso)
 
 
 
@@ -55,6 +56,8 @@ npm install
 ## Autores
 
 - ╭👨‍💼┊ [Marlon Ayala](https://www.github.com/marlonayaladev)
+
+- ┊👨‍💼┊ [Matias Baldeon](https://www.github.com/https://github.com/m0rci)
 
 - ╰👨‍💼┊ [Sebastian Naivarez](https://www.github.com/https://github.com/SebastianNaivarez)
 ## Uso
