@@ -1,0 +1,11 @@
+FROM php:7.4-cli
+
+# Copiar los archivos del proyecto
+COPY . /app
+WORKDIR /app
+
+# Exponer el puerto
+EXPOSE 10000
+
+# Comando para iniciar el servidor PHP
+CMD ["php", "-S", "0.0.0.0:10000"]
