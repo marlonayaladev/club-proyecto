@@ -16,13 +16,20 @@ if ($conn->connect_error) {
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-// Inserta los datos en la base de datos sin cifrar la contraseña
-$sql = "INSERT INTO usuarios (email, password) VALUES ('$email', '$password')";
+// Verifica si el correo existe en la base de datos
+$sql = "SELECT * FROM usuarios WHERE email = '$email'";
+$result = $conn->query($sql);
 
-if ($conn->query($sql) === TRUE) {
-    echo "Nuevo usuario registrado";
+if ($result->num_rows > 0) {
+    // Usuario encontrado, verificar la contraseña
+    $user = $result->fetch_assoc();
+    if ($password === $user['password']) {
+        echo "Inicio de sesión exitoso";
+    } else {
+        echo "Contraseña incorrecta";
+    }
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "El correo no está registrado";
 }
 
 // Cierra la conexión

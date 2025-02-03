@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Autonoma Club - Login</title>
+  <title> Club - Login</title>
   <link rel="stylesheet" href="styles.css" />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
@@ -49,19 +49,30 @@
     </div>
   </div>
   <script>
-    document.getElementById("login-form").addEventListener("submit", (e) => {
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const correo = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-      const usuario = usuarios.find(u => u.correo === correo && u.password === password);
-      
-      if (usuario) {
-        //pendiente para sebastian. crear alerta más estetica -> alert("asi");
-        window.location.href = "index.html"; 
-      } else {
-        alert("Correo o contraseña incorrectos");
+
+      try {
+        const response = await fetch("login_usuario.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `email=${correo}&password=${password}`,
+        });
+
+        const result = await response.text();
+        
+        if (response.ok) {
+          window.location.href = "index.html"; // Redirige a la página principal
+        } else {
+          alert(result); // Muestra el mensaje de error
+        }
+      } catch (error) {
+        alert("Error al iniciar sesión");
       }
     });
   </script>
