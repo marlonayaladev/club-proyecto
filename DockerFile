@@ -1,11 +1,11 @@
-FROM php:7.4-cli
+# Usa la imagen PHP con Apache
+FROM php:7.4-apache
 
-# Copiar los archivos del proyecto
-COPY . /app
-WORKDIR /app
+# Copiar los archivos del proyecto a la carpeta de Apache
+COPY . /var/www/html/
 
-# Exponer el puerto
-EXPOSE 10000
+# Exponer el puerto 80 (o el puerto que Render te asigne)
+EXPOSE 80
 
-# Comando para iniciar el servidor PHP
-CMD ["php", "-S", "0.0.0.0:10000"]
+# El comando para iniciar Apache
+CMD ["apache2-foreground"]
