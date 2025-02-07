@@ -57,9 +57,9 @@ npm install
 
 - ╭👨‍💼┊ [Marlon Ayala](https://www.github.com/marlonayaladev)
 
-- ┊👨‍💼┊ [Matias Baldeon](https://www.github.com/https://github.com/m0rci)
+- ┊👨‍💼┊ [Matias Baldeon](https://www.github.com/m0rci)
 
-- ╰👨‍💼┊ [Sebastian Naivarez](https://www.github.com/https://github.com/SebastianNaivarez)
+- ╰👨‍💼┊ [Sebastian Naivarez](https://www.github.com/SebastianNaivarez)
 ## Uso
 
 Cómo utilizar el proyecto una vez que esté instalado. Explica cómo interactuar con la interfaz, las funcionalidades y cualquier otro aspecto importante del funcionamiento del proyecto.
