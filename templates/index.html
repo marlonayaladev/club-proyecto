@@ -114,72 +114,77 @@
         //== renderizar las publicaciones == 
 
         function renderizarPublicaciones() {
-            const postsSection = document.querySelector('.posts-section');
-            postsSection.innerHTML = ''; //limpia publicaciones que ya existen
+    const postsSection = document.querySelector('.posts-section');
+    postsSection.innerHTML = ''; // Limpia publicaciones anteriores
 
-            //== cargar publicaciones desde ls == 
+    // Recuperar usuario actual desde localStorage
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-            const publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
+    // Cargar publicaciones desde localStorage
+    const publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
 
-            if (publicaciones.length === 0) {
-                console.log("No hay publicaciones para mostrar.");
-            }
+    publicaciones.forEach((publicacion, index) => {
+        const nuevaPublicacion = document.createElement('article');
+        nuevaPublicacion.classList.add('post-card');
 
-            publicaciones.forEach((publicacion, index) => {
-                const nuevaPublicacion = document.createElement('article');
-                nuevaPublicacion.classList.add('post-card');
+        // Verifica si la publicación pertenece al usuario actual
+        const esPropietario = usuario && usuario.nombreUsuario === publicacion.nombreUsuario;
+        const botonEliminar = esPropietario 
+            ? `<button class="delete-btn" onclick="eliminarPublicacion(${index})">🗑️</button>` 
+            : ''; // No muestra botón si no es del usuario
 
-                nuevaPublicacion.innerHTML = `
-                    <div class="post-header">
-                        <img src="${publicacion.fotoPerfil}" alt="Avatar Usuario" class="avatar" />
-                        <div class="post-info">
-                            <h3>${publicacion.nombreUsuario}</h3>
-                            <p>Publicado hace ${publicacion.tiempoPublicacion}</p>
-                        </div>
-                        <button class="delete-btn" onclick="eliminarPublicacion(${index})">🗑️</button>
-                    </div>
-                    <div class="post-content">
-                        <p>${publicacion.contenido}</p>
-                    </div>
-                    <div class="post-footer">
-                        <button class="like-btn">❤️ Me gusta</button>
-                        <button class="comment-btn">💬 Comentar</button>
-                    </div>
-                `;
+        nuevaPublicacion.innerHTML = `
+            <div class="post-header">
+                <img src="${publicacion.fotoPerfil}" alt="Avatar Usuario" class="avatar" />
+                <div class="post-info">
+                    <h3>${publicacion.nombreUsuario}</h3>
+                    <p>Publicado hace ${publicacion.tiempoPublicacion}</p>
+                </div>
+                ${botonEliminar} 
+            </div>
+            <div class="post-content">
+                <p>${publicacion.contenido}</p>
+            </div>
+            <div class="post-footer">
+                <button class="like-btn">❤️ Me gusta</button>
+                <button class="comment-btn">💬 Comentar</button>
+            </div>
+        `;
 
-                // == nuevo post arriba == 
+        postsSection.prepend(nuevaPublicacion);
+    });
+}
 
-                postsSection.prepend(nuevaPublicacion);
-            });
-        }
 
         // == BOTON ELIMINAR POST  == 
 
         function eliminarPublicacion(index) {
+    // Recuperar el usuario actual desde localStorage
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-            // == confirmar eliminación == 
+    if (!usuario || !usuario.nombreUsuario) {
+        alert("No se ha encontrado el usuario. Por favor, inicie sesión.");
+        return;
+    }
 
-            const confirmar = confirm("¿Estás seguro de que deseas eliminar esta publicación?");
-            if (confirmar) {
+    // Recuperar las publicaciones desde localStorage
+    let publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
 
-                // == recuperar post de ls == 
+    // Verificar si el usuario es el autor de la publicación
+    if (publicaciones[index].nombreUsuario !== usuario.nombreUsuario) {
+        alert("No puedes eliminar publicaciones de otros usuarios.");
+        return;
+    }
 
-                let publicaciones = JSON.parse(localStorage.getItem("publicaciones")) || [];
+    // Confirmar eliminación
+    const confirmar = confirm("¿Estás seguro de que deseas eliminar esta publicación?");
+    if (confirmar) {
+        publicaciones.splice(index, 1); // Eliminar la publicación del array
+        localStorage.setItem("publicaciones", JSON.stringify(publicaciones)); // Guardar cambios
+        renderizarPublicaciones(); // Volver a renderizar las publicaciones
+    }
+}
 
-                // == eliminar post == 
-
-                publicaciones.splice(index, 1);
-
-
-                // == Guardar el array actualizado en localStorage == 
-
-                localStorage.setItem("publicaciones", JSON.stringify(publicaciones));
-
-                // == Renderizar las publicaciones después de eliminar la publicación == 
-
-                renderizarPublicaciones();
-            }
-        }
 
         // == enviar post == 
 
@@ -213,6 +218,15 @@
                 charCount.style.color = '#f4f4f4'; //color principal
             }
         });
+
+        // Middleware para proteger la ruta de index.html
+    app.get('/index.html', (req, res) => {
+     if (req.session.isLoggedIn) {
+    res.sendFile('index.html'); // Si está logueado, sirve la página
+     } else {
+    res.redirect('/login.html'); // Si no está logueado, redirige a login
+     }
+});
     </script>
 </body>
 
